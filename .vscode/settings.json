@@ -11,6 +11,6 @@
     "**/.storybook": true,
     "**/*.stories.tsx": true,
     "**/.next": true,
-    "convex/_generated": true
+    "convex/_generated": true,
   }
 }

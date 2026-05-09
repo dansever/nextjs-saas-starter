@@ -46,3 +46,9 @@ storybook-static
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# local dev tooling (not part of the template)
+/.claude/
+/.cursor/
+/.idea/
+/.vscode/
