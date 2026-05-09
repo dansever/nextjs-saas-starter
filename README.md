@@ -1,130 +1,96 @@
 # Next.js SaaS Starter
 
-A generic Next.js template with authentication, a real-time backend, and a component library pre-configured and ready to go.
+Opinionated starter for AI SaaS products. Auth, real-time backend, file uploads, rate limiting, and a full component library — wired up and ready to build on.
+
+---
 
 ## Stack
 
-- **[Next.js](https://nextjs.org)** — React framework
-- **[Convex](https://convex.dev)** — real-time backend and database
-- **[Clerk](https://clerk.com)** — authentication and user management
-- **[shadcn/ui](https://ui.shadcn.com)** — component library built on Radix UI and Tailwind CSS
-- **[Upstash Redis](https://upstash.com)** — serverless Redis for rate limiting and caching
-- **[Zod](https://zod.dev)** — schema validation for forms, API payloads, and environment variables
-- **[Storybook](https://storybook.js.org)** — isolated component development and documentation
+| Layer | Technology |
+|---|---|
+| Framework | [Next.js 16](https://nextjs.org) (App Router) |
+| Auth | [Clerk](https://clerk.com) |
+| Backend / DB | [Convex](https://convex.dev) |
+| Caching | [Upstash Redis](https://upstash.com) |
+| Rate limiting | [Upstash Ratelimit](https://upstash.com/docs/ratelimit) |
+| File uploads | [UploadThing](https://uploadthing.com) |
+| UI | [shadcn/ui](https://ui.shadcn.com) + Tailwind CSS v4 |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts |
+| State | Zustand |
+| Env validation | [@t3-oss/env-nextjs](https://env.t3.gg) |
+| Testing | Vitest + Storybook + Playwright |
+
+LLM provider keys for OpenAI and Anthropic are included in `.env.example` — add the AI SDK of your choice.
 
 ---
 
 ## Prerequisites
 
-Before running locally, you need accounts and applications set up on these services:
+You need accounts on these services before running locally:
 
-1. **Convex** — create a free account at [convex.dev](https://dashboard.convex.dev) and have a project ready (or let the CLI create one for you).
-2. **Clerk** — create a free account at [clerk.com](https://dashboard.clerk.com), create a new application, and choose your sign-in methods.
-3. **Upstash** — create a free account at [upstash.com](https://upstash.com), create a Redis database, and copy the REST URL and token.
+- **Convex** — [dashboard.convex.dev](https://dashboard.convex.dev) — create a project (or let the CLI do it)
+- **Clerk** — [dashboard.clerk.com](https://dashboard.clerk.com) — create an application, grab API keys
+- **Upstash** — [upstash.com](https://upstash.com) — create a Redis database, grab REST URL + token
+- **UploadThing** — [uploadthing.com](https://uploadthing.com) — create an app, grab the token
 
 ---
 
 ## Setup
 
-### 1. Clone and install
-
 ```bash
 git clone <your-repo-url>
 cd <project-folder>
-npm install
+pnpm install
 ```
 
-### 2. Set up Convex
+Copy `.env.example` to `.env.local` and fill in your keys:
 
-Run the Convex dev CLI. It will prompt you to log in and link (or create) a deployment:
+```bash
+cp .env.example .env.local
+```
+
+Start Convex (keep this running alongside the dev server):
 
 ```bash
 npx convex dev
 ```
 
-Once connected, it writes a `NEXT_PUBLIC_CONVEX_URL` to your `.env.local` automatically and starts watching your `convex/` folder for schema and function changes. Keep this terminal running alongside your Next.js dev server.
-
-### 3. Set up Clerk
-
-In your [Clerk dashboard](https://dashboard.clerk.com), open your application and go to **API Keys**. Copy the two keys and add them to `.env.local`:
-
-```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-```
-
-Optionally configure redirect URLs to match your routes:
-
-```env
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
-```
-
-### 4. Run the dev server
+Start the app:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
-
-> Make sure `npx convex dev` is also running in a separate terminal so your backend functions and schema stay in sync.
 
 ---
 
 ## Environment variables
 
-Your `.env.local` should look like this when fully configured:
+See `.env.example` for the full list. Required to boot:
 
 ```env
-# Convex (auto-populated by `npx convex dev`)
-NEXT_PUBLIC_CONVEX_URL=https://<your-deployment>.convex.cloud
-
-# Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
-
-# Upstash Redis
-UPSTASH_REDIS_REST_URL=https://<your-db>.upstash.io
-UPSTASH_REDIS_REST_TOKEN=...
+NEXT_PUBLIC_CONVEX_URL=        # auto-written by `npx convex dev`
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+UPLOADTHING_TOKEN=
 ```
 
 ---
 
 ## Storybook
 
-Run Storybook to develop and preview components in isolation:
-
 ```bash
-npm run storybook
+pnpm storybook
 ```
 
 Open [http://localhost:6006](http://localhost:6006).
 
 ---
 
-## Adding shadcn components
-
-```bash
-npx shadcn@latest add button
-npx shadcn@latest add input
-# etc.
-```
-
----
-
 ## Deployment
 
-Deploy to [Vercel](https://vercel.com) and add the same environment variables in the project settings. For Convex, run `npx convex deploy` once to create a production deployment and copy its URL into Vercel's `NEXT_PUBLIC_CONVEX_URL`.
+Deploy to [Vercel](https://vercel.com). Add all env vars in the project settings. For Convex, run `npx convex deploy` once to create a production deployment — it will print the URL to add as `NEXT_PUBLIC_CONVEX_URL`.
